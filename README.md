@@ -1,66 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SpatieMediaLibraryFileUpload inside createOptionForm()
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+I have an exception when I save record with SpatieMediaLibraryFileUpload inside createOptionForm 
+` Call to undefined method App\Models\MealItems::getMedia() `
 
-## About Laravel
+# Packages Versions
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+laravel/framework v10.7.1
+filament/filament v2.17.25
+filament/spatie-laravel-media-library-plugin v2.17.25
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+PHP v8.1
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Problem description
 
-## Learning Laravel
+In a modal to create new Dish, in create context, no error showed and no media saved. In edit context, errors occurs.
+See below ...
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Expected behavior
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Media save as expected.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Set project
 
-## Laravel Sponsors
+ 1. Clone this repo
+ 2. `composer install`
+ 3. Rename .env.example to .env file to set your database
+ 4. Run 
+	 - `php artisan migrate`
+	 - `php artisan db:seed`
+	 - `php artisan  storage:link` 
+	 - `php artisan key:generate`
+	 - `php artisan serve`
+ 6. Go to admin panel at `http://127.0.0.1:8000/admin` and log in with credentials : *admin@admin.lab* // *password* .
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Steps to reproduce
 
-### Premium Partners
+In **Dishes** item, you can create and edit a dish.
+Pay your attention to ***SpatieMediaLibraryFileUpload*** component.
+With implements of `HasMedia`in Dish Model, image saves in public folder and in media table as expected.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+Now go to **Meals** item, create a new Meal.
+Fill required fields, also an image. Then in repeater field, fill fields and choose a dish in select component. Save works normally. Image recorded in media table and in public folder. Meal model has also implements `HasMedia`. 
 
-## Contributing
+ - **Issue 1**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Create a new Meal, but now create a new Dish by clicking on ***+*** button near select component Dish id.
 
-## Code of Conduct
+A modal opens with form to create a Dish.
+Fill fields ans choose an image.
+After clicking on Create button, this new Dish is selected in select component, but now, no record in media table and so no in public folder.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+ - **Issue 2**
 
-## Security Vulnerabilities
+Now, edit a Meal.
+Form is filled as expected. Go to repeater field and click on ***+*** button near select component Dish id , modal opens and fill fields. Don't forget to upload image in ***SpatieMediaLibraryFileUpload*** component.
+When you hit Create button, error `Call to undefined method App\Models\MealItems::getMedia()` occurs.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The media must be attached to the Dish model and not to the MealItems model. 
+Table meal_items (and so MealItems model) is used to save hasMany relation of Meal model.
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+If you want more details please ask me.
+
+Thank you
+
+
+# Reproduction repository
+
+[https://github.com/agencetwogether/filament-fork](https://github.com/agencetwogether/filament-fork)
