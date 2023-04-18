@@ -20,8 +20,12 @@ class DatabaseSeeder extends Seeder
         // Clear images
         Storage::deleteDirectory('public');
 
-        //$user = User::factory()->create();
-
+        DB::table('users')->insert([
+            'name' => 'Admin',
+            'email' => 'admin@admin.lab',
+            'email_verified_at' => null,
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+        ]);
         
         $categories = Category::factory()->count(3)->create();
 
