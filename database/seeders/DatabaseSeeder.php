@@ -11,6 +11,8 @@ use App\Models\Meal;
 use App\Models\MealItems;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+
 class DatabaseSeeder extends Seeder
 {
     const IMAGE_URL = 'https://source.unsplash.com/random/200x200/?img=1';
